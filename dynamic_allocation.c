@@ -8,13 +8,14 @@
 char buffer[100];
 void dynamic_allocation_malloc1();
 void dynamic_allocation_malloc2();
+void dynamic_allocation_malloc3();
 
 int main() {
 
 
-    dynamic_allocation_malloc1();
-    dynamic_allocation_malloc2();
-
+//    dynamic_allocation_malloc1();
+//    dynamic_allocation_malloc2();
+    dynamic_allocation_malloc3();
 }
 
 
@@ -61,4 +62,39 @@ void dynamic_allocation_malloc2() {
             printf("%-20s", buffer );
     }
     printf("\n");
+}
+
+void dynamic_allocation_malloc3() {
+
+    int (**ptr)[]; //ptr is a pointer to a pointer to a 1-d integer array
+    ptr = malloc(NUM_ROWS * sizeof(int(*)[])); // allocate as many as NUM_ROWS pointers to 1-d int arrays. The memory holds pointers to rows
+                                               // assign the first location of the memory block to ptr
+
+    printf("Size of pointer to 1-d int array is = %u\n", sizeof(int (*)[]));
+    printf("Size of int is = %u\n", sizeof(int));
+ 
+    printf("Printing addresses of allocated block of pointers to pointer to 1-d int array:\n");
+    for(unsigned int i = 0; i < NUM_ROWS; i++) {
+        printf("Address %u = %p\n",i,ptr+i);
+    } 
+    
+    //Allocate and assign arrays to all pointers to 1-d arrays
+    for(int row=0; row < NUM_ROWS; row++) {  
+       ptr[row] = malloc(NUM_COLS * sizeof(int)); //ptr[row] is of type pointer to 1-d array
+                                                  //size of 1-d array is NUM_COLS
+       //set all int values to 17                                                   
+       for(int col=0; col < NUM_COLS; col++) {
+            (*ptr[row])[col] = CONSTANT; //ptr[row] contains pointer to 1-d array, *(ptr[row]) gives 1-d array
+                                         //(*ptr[row])[col] is of type int. [col] gives element of the array at index col
+      }
+    }
+    
+    printf("Printing all addresses:\n");
+    for(unsigned int row=0; row < NUM_ROWS; row++) {
+        for(unsigned int col = 0; col < NUM_COLS; col++ ) {
+            printf("ptr = %p, row = %u, address where pointer to row stored, ptr + row = %p, starting address of row, ptr[row] = %p, address of int # %u (*ptr[row]) + col = %p\n", ptr, row, ptr + row, ptr[row], col, (*ptr[row]) + col); // ptr[row] gives pointer to 1-d array. *ptr[row] gives 1-d array. Both will print address of 0th integer
+                                                                 // in that array   
+        }
+        printf("\n");
+    }   
 }
